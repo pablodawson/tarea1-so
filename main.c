@@ -1,4 +1,4 @@
-// Tarea 1: Creación y comunicación de procesos.
+// Tarea 1: Creacion y comunicacion de procesos.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,7 +14,7 @@
 #include <sys/mman.h> // Para funciones de memoria compartida
 #include <fcntl.h>    // Para constantes de control de archivos
 
-// Función para Bubble Sort
+// Funcion para Bubble Sort
 void bubble_sort(int arr[], int n) {
     int i, j, temp;
     i = 0;
@@ -39,7 +39,7 @@ void swap(int* a, int* b) {
 int partition (int arr[], int low, int high)
 {
     int pivot = arr[high]; // Pivote
-    int i = (low - 1); // Índice de elemento más pequeño
+    int i = (low - 1); // Indice de elemento mas pequeno
 
     int j = low;
     for (; j <= high - 1; j++)
@@ -47,7 +47,7 @@ int partition (int arr[], int low, int high)
         // Si el elemento actual es menor o igual al pivote
         if (arr[j] <= pivot)
         {
-            i++;    // Incrementar índice de elemento más pequeño
+            i++;    // Incrementar indice de elemento mas pequeno
             swap(&arr[i], &arr[j]);
         }
     }
@@ -68,18 +68,18 @@ void quick_sort(int arr[], int low, int high){
 
 int main(int argc, char* argv[]){
 
-    // Inicializar generador de números aleatorios
+    // Inicializar generador de numeros aleatorios
     srand(time(NULL));
 
-    // Definir número de hijos y tamaño de datos
+    // Definir numero de hijos y tamano de datos
     const int NUM_HIJOS = 4;
     const int TAMANO_DATOS = 50;
 
     // Nombre del objeto de memoria compartida
     const char *nombre_memoria = "MemoriaCompartida";
 
-    // Tamaño de la memoria compartida
-    size_t tamaño_memoria = NUM_HIJOS * TAMANO_DATOS * sizeof(int);
+    // Tamano de la memoria compartida
+    size_t tamano_memoria = NUM_HIJOS * TAMANO_DATOS * sizeof(int);
 
     // Crear objeto de memoria compartida
     int shm_fd = shm_open(nombre_memoria, O_CREAT | O_RDWR, 0666);
@@ -88,23 +88,23 @@ int main(int argc, char* argv[]){
         exit(1);
     }
 
-    // Configurar el tamaño de la memoria compartida
-    if(ftruncate(shm_fd, tamaño_memoria) == -1){
-        perror("Error al configurar tamaño de memoria compartida");
+    // Configurar el tamano de la memoria compartida
+    if(ftruncate(shm_fd, tamano_memoria) == -1){
+        perror("Error al configurar tamano de memoria compartida");
         exit(1);
     }
 
     // Mapear la memoria compartida
-    int *datos_compartidos = mmap(NULL, tamaño_memoria, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
+    int *datos_compartidos = mmap(NULL, tamano_memoria, PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
     if(datos_compartidos == MAP_FAILED){
         perror("Error al mapear memoria compartida");
         exit(1);
     }
 
-    // Generar números aleatorios y almacenarlos en memoria compartida
+    // Generar numeros aleatorios y almacenarlos en memoria compartida
     int i = 0;
     for (; i < NUM_HIJOS * TAMANO_DATOS; i++){
-        datos_compartidos[i] = rand() % 1000 + 1; // Números entre 1 y 1000
+        datos_compartidos[i] = rand() % 1000 + 1; // Numeros entre 1 y 1000
     }
 
     // Crear procesos hijos
@@ -121,11 +121,11 @@ int main(int argc, char* argv[]){
         else if(pids[i] == 0){
             // Proceso hijo
 
-            // Calcular el índice inicial en memoria compartida para este hijo
+            // Calcular el indice inicial en memoria compartida para este hijo
             int *datos_hijo = datos_compartidos + i * TAMANO_DATOS;
 
             // Esperar un tiempo aleatorio entre 10 y 30 segundos
-            srand(time(NULL) + i); // Inicializar la semilla del generador de números aleatorios con un valor diferente para cada hijo
+            srand(time(NULL) + i); // Inicializar la semilla del generador de numeros aleatorios con un valor diferente para cada hijo
             int tiempo_espera = rand() % 21 + 10; // Entre 10 y 30 segundos
             printf("Hijo %d va a esperar %d segundos\n", i+1, tiempo_espera);
             sleep(tiempo_espera);
@@ -136,18 +136,18 @@ int main(int argc, char* argv[]){
                 printf("Hijo %d va a usar QuickSort\n", i+1);
                 quick_sort(datos_hijo, 0, TAMANO_DATOS -1);
             } else {
-                // Últimos dos hijos usan Bubble Sort
+                // Ultimos dos hijos usan Bubble Sort
                 printf("Hijo %d va a usar Bubble Sort\n", i+1);
                 bubble_sort(datos_hijo, TAMANO_DATOS);
             }
 
             // Desmapear memoria compartida
-            munmap(datos_compartidos, tamaño_memoria);
+            munmap(datos_compartidos, tamano_memoria);
 
             // Salir del proceso hijo
             exit(0);
         }
-        // El proceso padre continúa al siguiente hijo
+        // El proceso padre continua al siguiente hijo
     }
 
     // El proceso padre espera a que todos los hijos terminen
@@ -167,7 +167,7 @@ int main(int argc, char* argv[]){
     }
 
     // Limpiar memoria compartida
-    munmap(datos_compartidos, tamaño_memoria);
+    munmap(datos_compartidos, tamano_memoria);
     shm_unlink(nombre_memoria);
 
     return 0;
