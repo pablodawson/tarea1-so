@@ -17,8 +17,10 @@
 // Función para Bubble Sort
 void bubble_sort(int arr[], int n) {
     int i, j, temp;
-    for (i = 0; i < n-1; i++){
-        for (j = 0; j < n-i-1; j++){
+    i = 0;
+    for (; i < n-1; i++){
+        j = 0;
+        for (; j < n-i-1; j++){
             if (arr[j] > arr[j+1]) {
                 // Intercambiar arr[j] y arr[j+1]
                 temp = arr[j];
@@ -39,7 +41,8 @@ int partition (int arr[], int low, int high)
     int pivot = arr[high]; // Pivote
     int i = (low - 1); // Índice de elemento más pequeño
 
-    for (int j = low; j <= high - 1; j++)
+    int j = low;
+    for (; j <= high - 1; j++)
     {
         // Si el elemento actual es menor o igual al pivote
         if (arr[j] <= pivot)
@@ -99,14 +102,16 @@ int main(int argc, char* argv[]){
     }
 
     // Generar números aleatorios y almacenarlos en memoria compartida
-    for(int i = 0; i < NUM_HIJOS * TAMANO_DATOS; i++){
+    int i = 0;
+    for (; i < NUM_HIJOS * TAMANO_DATOS; i++){
         datos_compartidos[i] = rand() % 1000 + 1; // Números entre 1 y 1000
     }
 
     // Crear procesos hijos
     pid_t pids[NUM_HIJOS];
 
-    for(int i = 0; i < NUM_HIJOS; i++){
+    i = 0;
+    for (; i < NUM_HIJOS; i++){
         pids[i] = fork();
 
         if(pids[i] < 0){
@@ -146,14 +151,16 @@ int main(int argc, char* argv[]){
     }
 
     // El proceso padre espera a que todos los hijos terminen
-    for(int i = 0; i < NUM_HIJOS; i++){
+    i = 0;
+    for (; i < NUM_HIJOS; i++){
         waitpid(pids[i], NULL, 0);
 
         // Una vez que el hijo ha terminado, leer y mostrar los datos ordenados
         int *datos_hijo = datos_compartidos + i * TAMANO_DATOS;
 
         printf("Datos ordenados del hijo %d:\n", i+1);
-        for(int j = 0; j < TAMANO_DATOS; j++){
+        int j = 0;
+        for (; j < TAMANO_DATOS; j++){
             printf("%d ", datos_hijo[j]);
         }
         printf("\n");
